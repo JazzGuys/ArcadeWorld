@@ -4,28 +4,63 @@
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="js/main.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/api.js" defer></script>
     <title>ArcadeWorld</title>
 </head>
 <body>
-    <header>
-        <h1 class="title">ArcadeWorld</h1>
-    </header>
-
-    <div class="game-container">
-        <div class="game-card">
-            <h2 class="game-title">Arkanoid</h2>
-        </div>
-
-        <div class="game-card">
-            <h2 class="game-title">Tetris</h2>
-        </div>
-
-        <div class="game-card">
-            <h2 class="game-title">Snake</h2>
-        </div>
+<header>
+    <h1 class="title">ArcadeWorld</h1>
+    <div id="user-panel" class="hidden">
+        <span id="welcome-message"></span>
+        <button id="logout-btn">Выйти</button>
     </div>
+</header>
+
+<main>
+    <section id="auth-section">
+        <div class="auth-box">
+            <h2 id="auth-title">Вход</h2>
+            <form id="auth-form">
+                <div class="input-group">
+                    <label for="username">Логин:</label>
+                    <input type="text" id="username" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div id="auth-error" class="error-text"></div>
+                <button type="submit" id="auth-submit-btn">Войти</button>
+            </form>
+            <p class="toggle-text">
+                <span id="toggle-auth-msg">Нет аккаунта?</span>
+                <a href="#" id="toggle-auth-link">Зарегистрироваться</a>
+            </p>
+        </div>
+    </section>
+
+    <section id="dashboard-section" class="hidden">
+        <h2>Выберите игру</h2>
+        <div class="games-grid">
+            <div class="game-card" id="btn-snake">
+                <h3>Змейка</h3>
+                <p>Классика жанра. Собирай еду и расти!</p>
+            </div>
+            <div class="game-card" id="btn-tetris">
+                <h3>Тетрис</h3>
+                <p>Складывай блоки в ровные линии.</p>
+            </div>
+        </div>
+
+        <div id="game-container" class="hidden">
+            <canvas id="game-canvas" width="400" height="400"></canvas>
+            <button id="close-game-btn">Выйти из игры</button>
+        </div>
+    </section>
+</main>
 </body>
 </html>
