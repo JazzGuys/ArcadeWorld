@@ -1,7 +1,3 @@
-import Snake from '../games/snake/snake';
-
-const snake = new Snake();
-
 const authSection = document.getElementById('auth-section');
 const dashboardSection = document.getElementById('dashboard-section');
 const userPanel = document.getElementById('user-panel');
