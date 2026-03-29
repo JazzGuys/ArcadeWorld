@@ -18,10 +18,10 @@ const api = {
     },
 
     register(username, password) {
-        return this.post('/api/register', {username, password});
+        return this.post('http://localhost:3000/api/register', {username, password});
     },
 
     login(username, password) {
-        return this.post('/api/login', {username, password});
+        return this.post('http://localhost:3000/api/login', {username, password});
     }
 };
