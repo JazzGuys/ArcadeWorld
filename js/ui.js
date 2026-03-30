@@ -1,7 +1,7 @@
 import api from './api.js';
 
-import Snake from "./games/snake/snake.js";
-const snake = new Snake();
+// import Snake from "./games/snake/snake.js";
+// const snake = new Snake();
 
 const authSection = document.getElementById('auth-section');
 const dashboardSection = document.getElementById('dashboard-section');
@@ -18,6 +18,8 @@ const authSubmitBtn = document.getElementById('auth-submit-btn');
 const toggleAuthLink = document.getElementById('toggle-auth-link');
 const toggleAuthMsg = document.getElementById('toggle-auth-msg');
 const logoutBtn = document.getElementById('logout-btn');
+
+const leadersTable = document.getElementById('leaders');
 
 let isLoginMode = true;
 
@@ -100,3 +102,17 @@ logoutBtn.addEventListener('click', () => {
 });
 
 checkAuth();
+
+function populateLeaderboard(leaders) {
+    // api.getLeaders("snake").then((data) => console.log(data));
+    leadersTable.innerHTML = '';
+    if (leaders.length === 0) {
+        leadersTable.innerHTML = '<tr><td>Лидеров нет</td></tr>';
+        return;
+    }
+    leaders.forEach((leader, i) => {
+        leadersTable.innerHTML += `<tr><td>${i + 1}</td><td>${leader.name}</td><td>${leader.score}</td></tr>`;
+    })
+}
+
+populateLeaderboard([{name: "sas", score: 676767}, {name: "leven", score: 6767}, {name: "linik", score: 67}]);

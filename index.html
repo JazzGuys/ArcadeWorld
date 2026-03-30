@@ -43,20 +43,37 @@
     </section>
 
     <section id="dashboard-section" class="hidden">
-        <h2>Выберите игру</h2>
-        <div class="games-grid">
-            <div class="game-card" id="btn-snake">
-                <h3>Змейка</h3>
-                <p>Классика жанра. Собирай еду и расти!</p>
-            </div>
-            <div class="game-card" id="btn-tetris">
-                <h3>Тетрис</h3>
-                <p>Складывай блоки в ровные линии.</p>
+        <div class="game-selection">
+            <h2>Выберите игру</h2>
+            <div class="games-grid">
+                <div class="game-card" id="btn-snake">
+                    <h3>Змейка</h3>
+                    <p>Классика жанра. Собирай еду и расти!</p>
+                </div>
+                <div class="game-card" id="btn-tetris">
+                    <h3>Тетрис</h3>
+                    <p>Складывай блоки в ровные линии.</p>
+                </div>
             </div>
         </div>
 
         <div id="game-container">
             <canvas id="game-canvas" width="400" height="400"></canvas>
+            <div class="leaderboard-container">
+                <h2 class="leaderboard-title">Таблица лидеров:</h2>
+                <table class="leaderboard">
+                    <thead>
+                    <tr>
+                        <th>Место</th>
+                        <th>Игрок</th>
+                        <th>Очки</th>
+                    </tr>
+                    </thead>
+                    <tbody id="leaders">
+
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 </main>
