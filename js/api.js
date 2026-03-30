@@ -25,3 +25,5 @@ const api = {
         return this.post('http://localhost:3000/api/login', {username, password});
     }
 };
+
+export default api;

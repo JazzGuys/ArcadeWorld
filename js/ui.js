@@ -1,3 +1,8 @@
+import api from './api.js';
+
+import Snake from "./games/snake/snake.js";
+const snake = new Snake();
+
 const authSection = document.getElementById('auth-section');
 const dashboardSection = document.getElementById('dashboard-section');
 const userPanel = document.getElementById('user-panel');
