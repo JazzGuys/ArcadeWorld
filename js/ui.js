@@ -1,7 +1,7 @@
 import api from './api.js';
 
-// import Snake from "./games/snake/snake.js";
-// const snake = new Snake();
+import Game from "./games/snake/game.js";
+const snake = new Game();
 
 const authSection = document.getElementById('auth-section');
 const dashboardSection = document.getElementById('dashboard-section');
@@ -19,6 +19,7 @@ const toggleAuthLink = document.getElementById('toggle-auth-link');
 const toggleAuthMsg = document.getElementById('toggle-auth-msg');
 const logoutBtn = document.getElementById('logout-btn');
 
+const gamesGrid = document.getElementById('games-grid');
 const leadersTable = document.getElementById('leaders');
 
 let isLoginMode = true;
@@ -116,3 +117,32 @@ function populateLeaderboard(leaders) {
 }
 
 populateLeaderboard([{name: "sas", score: 676767}, {name: "leven", score: 6767}, {name: "linik", score: 67}]);
+
+async function populateGameList() {
+    const games = await fetch("./js/games.json");
+    const gameNames = await games.json();
+
+    for (const name of gameNames) {
+        const configRequest = await fetch(`./js/games/${name}/config.json`);
+        const config = await configRequest.json();
+        gamesGrid.innerHTML += `
+            <div class="game-card" id="btn-snake" data-gamename="${name}">
+                <h3>${config.name}</h3>
+                <p>${config.description}</p>
+            </div>`;
+    }
+
+    gamesGrid.addEventListener('click', async (e) => {
+        const card = e.target.closest('.game-card');
+        if (!card) return;
+
+        const name = card.dataset.gamename;
+        console.log(`Запускаем игру: ${name}`);
+
+        const module = await import(`./games/${name}/game.js`);
+        const Game = module.default;
+        const game = new Game();
+    });
+}
+
+await populateGameList();

@@ -13,7 +13,7 @@ class Vector2 {
     }
 }
 
-class Snake {
+class Game {
     constructor() {
         this.body = [new Vector2(5, 5)];
         this.direction = new Vector2(1, 0);
@@ -85,4 +85,4 @@ class Snake {
     }
 }
 
-export default Snake;
+export default Game;
