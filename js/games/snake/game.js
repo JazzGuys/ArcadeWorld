@@ -1,43 +1,56 @@
-const canvas = document.getElementById('game-canvas');
-const ctx = canvas.getContext('2d');
-
 const CELL_SIZE = 20;
 
-let lastTime = 0;
-const speed = 10;
+class Vector2 { constructor(x, y) { this.x = x; this.y = y; } }
 
-class Vector2 {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
+export default class Game {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.animationId = null;
+        this.lastTime = 0;
+        this.handleInput = this.handleInput.bind(this);
     }
-}
 
-class Game {
-    constructor() {
+    init() {
         this.body = [new Vector2(5, 5)];
         this.direction = new Vector2(1, 0);
-        this.food = new Vector2(6, 7);
         this.score = 0;
+        this.speed = 10;
+        this.isGameOver = false;
+        this.spawnFood();
+        this.draw();
+    }
 
-        window.requestAnimationFrame(this.gameLoop.bind(this));
+    startGame(onGameOverCallback) {
+        this.onGameOver = onGameOverCallback;
+        document.addEventListener('keydown', this.handleInput);
+        if (this.animationId) cancelAnimationFrame(this.animationId);
+        this.animationId = window.requestAnimationFrame(this.gameLoop.bind(this));
+    }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'w' && this.direction.y === 0) { this.direction = new Vector2(0, -1); }
-            else if (e.key === 's' && this.direction.y === 0) { this.direction = new Vector2(0, 1); }
-            else if (e.key === 'a' && this.direction.x === 0) { this.direction = new Vector2(-1, 0); }
-            else if (e.key === 'd' && this.direction.x === 0) { this.direction = new Vector2(1, 0); }
-        });
+    endGame() {
+        this.isGameOver = true;
+        cancelAnimationFrame(this.animationId);
+        document.removeEventListener('keydown', this.handleInput);
+    }
+
+    handleInput(e) {
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].includes(e.code)) e.preventDefault();
+
+        const code = e.code;
+        if ((code === 'KeyW' || code === 'ArrowUp') && this.direction.y === 0) { this.direction = new Vector2(0, -1); }
+        else if ((code === 'KeyS' || code === 'ArrowDown') && this.direction.y === 0) { this.direction = new Vector2(0, 1); }
+        else if ((code === 'KeyA' || code === 'ArrowLeft') && this.direction.x === 0) { this.direction = new Vector2(-1, 0); }
+        else if ((code === 'KeyD' || code === 'ArrowRight') && this.direction.x === 0) { this.direction = new Vector2(1, 0); }
     }
 
     gameLoop(currentTime) {
-        window.requestAnimationFrame(this.gameLoop.bind(this));
+        if (this.isGameOver) return;
+        this.animationId = window.requestAnimationFrame(this.gameLoop.bind(this));
 
-        const secondsSinceLastRender = (currentTime - lastTime) / 1000;
-
-        if (secondsSinceLastRender < 1 / speed) return;
-
-        lastTime = currentTime;
+        const secondsSinceLastRender = (currentTime - this.lastTime) / 1000;
+        if (secondsSinceLastRender < 1 / this.speed) return;
+        this.lastTime = currentTime;
 
         this.update();
         this.draw();
@@ -47,42 +60,38 @@ class Game {
         const head = this.body[0];
         const newHead = new Vector2(head.x + this.direction.x, head.y + this.direction.y);
 
-        this.body.unshift(newHead);
-
-        if (newHead.x === this.food.x && newHead.y === this.food.y) {
-            this.spawnFood();
-        } else {
-            this.body.pop();
+        if (newHead.x < 0 || newHead.x >= this.canvas.width / CELL_SIZE || newHead.y < 0 || newHead.y >= this.canvas.height / CELL_SIZE) {
+            this.triggerGameOver(); return;
         }
+
+        for (let segment of this.body) {
+            if (newHead.x === segment.x && newHead.y === segment.y) { this.triggerGameOver(); return; }
+        }
+
+        this.body.unshift(newHead);
+        if (newHead.x === this.food.x && newHead.y === this.food.y) {
+            this.score += 10;
+            if (this.score % 50 === 0) this.speed += 2;
+            this.spawnFood();
+        } else this.body.pop();
     }
+
+    triggerGameOver() { this.endGame(); if (this.onGameOver) this.onGameOver(this.score); }
 
     spawnFood() {
         this.food = new Vector2(
-            Math.floor(Math.random() * (canvas.width / CELL_SIZE)),
-            Math.floor(Math.random() * (canvas.height / CELL_SIZE))
+            Math.floor(Math.random() * (this.canvas.width / CELL_SIZE)),
+            Math.floor(Math.random() * (this.canvas.height / CELL_SIZE))
         );
     }
 
     draw() {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = 'lime';
-        this.body.forEach(segment => {
-            ctx.fillRect(segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE - 2, CELL_SIZE - 2);
+        this.ctx.fillStyle = '#111'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.body.forEach((segment, index) => {
+            this.ctx.fillStyle = index === 0 ? '#a0e8a9' : '#80bd88';
+            this.ctx.fillRect(segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
         });
-
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.food.x * CELL_SIZE, this.food.y * CELL_SIZE, CELL_SIZE - 2, CELL_SIZE - 2);
-
-        // const grid_size = {x: canvas.width / CELL_SIZE, y: canvas.height / CELL_SIZE};
-        // for (let x = 0; x < grid_size.x; x++) {
-        //     for (let y = 0; y < grid_size.y; y++) {
-        //         ctx.fillStyle = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255})`;
-        //         ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, x * CELL_SIZE + CELL_SIZE, y * CELL_SIZE + CELL_SIZE);
-        //     }
-        // }
+        this.ctx.fillStyle = '#be6672';
+        this.ctx.fillRect(this.food.x * CELL_SIZE, this.food.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
     }
 }
-
-export default Game;
