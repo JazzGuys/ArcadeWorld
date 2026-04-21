@@ -1,13 +1,20 @@
 const api = {
+    _getHeaders() {
+        const headers = { 'Content-Type': 'application/json' };
+        const token = localStorage.getItem('token');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        return headers;
+    },
+
     async get(endpoint, params = {}) {
         const queryString = new URLSearchParams(params).toString();
         const url = queryString ? `${endpoint}?${queryString}` : endpoint;
 
         const response = await fetch(url, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: this._getHeaders()
         });
 
         return this._handleResponse(response);
@@ -16,9 +23,7 @@ const api = {
     async post(endpoint, data) {
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: this._getHeaders(),
             body: JSON.stringify(data)
         });
 
@@ -45,6 +50,10 @@ const api = {
 
     getLeaders(game) {
         return this.get('http://localhost:3000/api/leaderboard', {game});
+    },
+
+    submitScore(game, score) {
+        return this.post('http://localhost:3000/api/score', {game, score});
     }
 };
 

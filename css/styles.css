@@ -11,10 +11,8 @@
     --accent-color: #663399;
     --box-bg: #221f25;
     --border-color: #2f2d31;
-
     --valid: #80bd88;
     --invalid: #be6672;
-
     --border-radius: 8px;
 }
 
@@ -50,6 +48,7 @@ header {
     cursor: pointer;
     font-weight: bold;
     margin-left: 0.5rem;
+    border-radius: var(--border-radius);
 }
 
 .auth-box {
@@ -84,6 +83,7 @@ header {
     border: 1px solid var(--border-color);
     color: var(--text-color);
     outline: none;
+    border-radius: var(--border-radius);
 }
 
 .input-group input:focus {
@@ -100,6 +100,7 @@ button[type="submit"] {
     font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
+    border-radius: var(--border-radius);
 }
 
 button[type="submit"]:hover {
@@ -141,33 +142,147 @@ main {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    width: 100%;
+}
+
+#game-selection {
+    width: 100%;
+    text-align: center;
+}
+
+#game-selection h2 {
+    margin-bottom: 20px;
 }
 
 #games-grid {
     display: flex;
     gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .game-card {
     background-color: var(--box-bg);
     border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
     padding: 20px;
-    flex: 1;
+    width: 250px;
     text-align: center;
     cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
 }
 
-.game-title {
-    font-size: 1.5rem;
-    font-weight: 500;
+.game-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+}
+
+.game-card h3 {
+    margin-bottom: 10px;
+    color: var(--accent-color);
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+#back-to-games-btn {
+    background-color: var(--box-bg);
+    border: 1px solid var(--accent-color);
+    color: var(--text-color);
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#back-to-games-btn:hover {
+    background-color: var(--accent-color);
+}
+
+.canvas-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+#game-canvas {
+    display: block;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    background-color: #111;
+}
+
+#game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
     text-align: center;
+}
+
+#overlay-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: var(--accent-color);
+}
+
+#overlay-text {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    color: var(--text-color);
+}
+
+#overlay-action-btn {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+#overlay-action-btn:hover {
+    background-color: var(--valid);
+}
+
+.leaderboard-container {
+    width: 100%;
+}
+
+.leaderboard-title {
+    margin-bottom: 10px;
 }
 
 .leaderboard {
     width: 100%;
     border-collapse: collapse;
-    font-family: sans-serif;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    background-color: var(--box-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
 }
 
 .leaderboard th, .leaderboard td {
@@ -178,4 +293,8 @@ main {
 
 .leaderboard thead {
     background-color: var(--accent-color);
+}
+
+.leaderboard tbody tr:last-child td {
+    border-bottom: none;
 }
