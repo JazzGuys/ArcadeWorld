@@ -224,7 +224,8 @@ main {
 
 .game-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 2rem;
     align-items: center;
     width: 100%;
     margin-bottom: 15px;
