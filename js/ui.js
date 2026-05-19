@@ -15,6 +15,11 @@ const toggleAuthLink = document.getElementById('toggle-auth-link');
 const toggleAuthMsg = document.getElementById('toggle-auth-msg');
 const logoutBtn = document.getElementById('logout-btn');
 
+const tabGames = document.getElementById('tab-games');
+const tabLeaderboard = document.getElementById('tab-leaderboard');
+const leaderboardSection = document.getElementById('leaderboard-section');
+const leaderboardGameSelect = document.getElementById('leaderboard-game-select');
+
 const gameSelection = document.getElementById('game-selection');
 const gamesGrid = document.getElementById('games-grid');
 const gameContainer = document.getElementById('game-container');
@@ -47,7 +52,7 @@ function checkAuth() {
         dashboardSection.classList.remove('hidden');
         userPanel.classList.remove('hidden');
         welcomeMessage.textContent = `Привет, ${username}!`;
-        showGameSelection();
+        switchTab('games'); // При входе открываем вкладку с играми
     } else {
         authSection.classList.remove('hidden');
         dashboardSection.classList.add('hidden');
@@ -55,7 +60,10 @@ function checkAuth() {
         usernameInput.value = '';
         passwordInput.value = '';
         authError.textContent = '';
-        if (currentGameInstance) currentGameInstance.endGame();
+        if (currentGameInstance) {
+            currentGameInstance.endGame();
+            currentGameInstance = null;
+        }
     }
 }
 
@@ -105,7 +113,43 @@ logoutBtn.addEventListener('click', () => {
     checkAuth();
 });
 
-checkAuth();
+function switchTab(tab) {
+    if (tab === 'games') {
+        tabGames.classList.add('active');
+        tabLeaderboard.classList.remove('active');
+        leaderboardSection.classList.add('hidden');
+
+        if (currentGameInstance) {
+            gameContainer.classList.remove('hidden');
+        } else {
+            gameSelection.classList.remove('hidden');
+        }
+    } else if (tab === 'leaderboard') {
+        tabLeaderboard.classList.add('active');
+        tabGames.classList.remove('active');
+
+        gameSelection.classList.add('hidden');
+        gameContainer.classList.add('hidden');
+        if (currentGameInstance) {
+            currentGameInstance.endGame();
+            currentGameInstance = null;
+        }
+
+        leaderboardSection.classList.remove('hidden');
+
+        if (leaderboardGameSelect.value) {
+            updateLeaderboard(leaderboardGameSelect.value);
+        }
+    }
+}
+
+tabGames.addEventListener('click', () => switchTab('games'));
+tabLeaderboard.addEventListener('click', () => switchTab('leaderboard'));
+
+leaderboardGameSelect.addEventListener('change', (e) => {
+    updateLeaderboard(e.target.value);
+});
+
 
 async function updateLeaderboard(gameId) {
     leadersTable.innerHTML = '<tr><td colspan="3">Загрузка...</td></tr>';
@@ -140,15 +184,22 @@ async function populateGameList() {
         const response = await fetch("./js/games.json");
         const gameNames = await response.json();
         gamesGrid.innerHTML = '';
+        leaderboardGameSelect.innerHTML = '';
 
         for (const name of gameNames) {
             const configRequest = await fetch(`./js/games/${name}/config.json`);
             const config = await configRequest.json();
+
             const card = document.createElement('div');
             card.className = 'game-card';
             card.dataset.gameid = name;
             card.innerHTML = `<h3>${config.name}</h3><p>${config.description}</p>`;
             gamesGrid.appendChild(card);
+
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = config.name;
+            leaderboardGameSelect.appendChild(option);
         }
     } catch (e) {
         console.error("Ошибка", e);
@@ -166,8 +217,6 @@ gamesGrid.addEventListener('click', async (e) => {
     gameContainer.classList.remove('hidden');
     currentGameTitle.textContent = gameTitle;
 
-    await updateLeaderboard(currentGameId);
-
     try {
         const module = await import(`./games/${currentGameId}/game.js`);
         const GameClass = module.default;
@@ -177,6 +226,7 @@ gamesGrid.addEventListener('click', async (e) => {
 
         gameOverlay.classList.remove('hidden');
         overlayTitle.textContent = gameTitle;
+        overlayText.textContent = '';
         overlayActionBtn.textContent = "Начать игру";
 
         overlayActionBtn.onclick = () => {
@@ -198,7 +248,6 @@ async function handleGameOver(score) {
 
     try {
         await api.submitScore(currentGameId, score);
-        await updateLeaderboard(currentGameId);
     } catch (e) {
         console.error('Ошибка сохранения', e);
     }
@@ -212,3 +261,5 @@ async function handleGameOver(score) {
 }
 
 await populateGameList();
+
+checkAuth();
