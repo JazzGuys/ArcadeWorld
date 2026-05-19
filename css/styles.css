@@ -40,6 +40,42 @@ header {
     align-items: center;
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.title {
+    font-size: 2rem;
+    margin: 0;
+}
+
+#dashboard-nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.nav-tab {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-tab:hover {
+    background-color: var(--border-color);
+}
+
+.nav-tab.active {
+    background-color: var(--accent-color);
+    font-weight: bold;
+}
+
 #logout-btn {
     background-color: var(--accent-color);
     color: white;
@@ -47,7 +83,7 @@ header {
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-weight: bold;
-    margin-left: 0.5rem;
+    margin-left: 1rem;
     border-radius: var(--border-radius);
 }
 
@@ -133,46 +169,12 @@ main {
     padding: 2rem 1rem;
 }
 
-.title {
-    font-size: 2rem;
-}
-
 #dashboard-section {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
     width: 100%;
-}
-
-#dashboard-nav {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    background-color: var(--box-bg);
-    padding: 0.5rem;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-}
-
-.nav-tab {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    padding: 0.5rem 1.5rem;
-    font-size: 1.1rem;
-    cursor: pointer;
-    border-radius: var(--border-radius);
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.nav-tab:hover {
-    background-color: var(--border-color);
-}
-
-.nav-tab.active {
-    background-color: var(--accent-color);
-    font-weight: bold;
 }
 
 #game-selection {

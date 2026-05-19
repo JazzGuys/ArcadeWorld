@@ -15,6 +15,7 @@ const toggleAuthLink = document.getElementById('toggle-auth-link');
 const toggleAuthMsg = document.getElementById('toggle-auth-msg');
 const logoutBtn = document.getElementById('logout-btn');
 
+const dashboardNav = document.getElementById('dashboard-nav');
 const tabGames = document.getElementById('tab-games');
 const tabLeaderboard = document.getElementById('tab-leaderboard');
 const leaderboardSection = document.getElementById('leaderboard-section');
@@ -51,12 +52,14 @@ function checkAuth() {
         authSection.classList.add('hidden');
         dashboardSection.classList.remove('hidden');
         userPanel.classList.remove('hidden');
+        dashboardNav.classList.remove('hidden');
         welcomeMessage.textContent = `Привет, ${username}!`;
-        switchTab('games'); // При входе открываем вкладку с играми
+        switchTab('games');
     } else {
         authSection.classList.remove('hidden');
         dashboardSection.classList.add('hidden');
         userPanel.classList.add('hidden');
+        dashboardNav.classList.add('hidden');
         usernameInput.value = '';
         passwordInput.value = '';
         authError.textContent = '';
@@ -144,12 +147,12 @@ function switchTab(tab) {
 }
 
 tabGames.addEventListener('click', () => switchTab('games'));
+
 tabLeaderboard.addEventListener('click', () => switchTab('leaderboard'));
 
 leaderboardGameSelect.addEventListener('change', (e) => {
     updateLeaderboard(e.target.value);
 });
-
 
 async function updateLeaderboard(gameId) {
     leadersTable.innerHTML = '<tr><td colspan="3">Загрузка...</td></tr>';
