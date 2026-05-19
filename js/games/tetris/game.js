@@ -29,7 +29,6 @@ export default class Game {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
 
-        // Центрируем игровое поле 200x400 внутри 400x400
         this.offsetX = (this.canvas.width - COLS * BLOCK_SIZE) / 2;
         this.offsetY = 0;
 
@@ -43,9 +42,8 @@ export default class Game {
     init() {
         this.score = 0;
         this.isGameOver = false;
-        this.dropInterval = 800; // Падает каждые 800мс
+        this.dropInterval = 800;
 
-        // Создаем пустую доску
         this.grid = Array.from({length: ROWS}, () => Array(COLS).fill(0));
 
         this.spawnPiece();
@@ -73,7 +71,6 @@ export default class Game {
             pos: { x: Math.floor(COLS / 2) - 1, y: 0 }
         };
 
-        // Если при спавне есть коллизия — Game Over
         if (this.collide(this.grid, this.piece)) {
             this.endGame();
             if (this.onGameOver) this.onGameOver(this.score);
@@ -116,7 +113,6 @@ export default class Game {
 
     rotatePiece() {
         const matrix = this.piece.matrix;
-        // Транспонирование и реверс строк (поворот на 90 градусов)
         for (let y = 0; y < matrix.length; ++y) {
             for (let x = 0; x < y; ++x) {
                 [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
@@ -124,7 +120,6 @@ export default class Game {
         }
         matrix.forEach(row => row.reverse());
 
-        // Проверка отскока от стены при повороте
         let offset = 1;
         const pos = this.piece.pos.x;
         while (this.collide(this.grid, this.piece)) {
@@ -175,7 +170,6 @@ export default class Game {
             for (let x = 0; x < COLS; ++x) {
                 if (this.grid[y][x] === 0) continue outer;
             }
-            // Удаляем строку и добавляем пустую сверху
             const row = this.grid.splice(y, 1)[0].fill(0);
             this.grid.unshift(row);
             ++y;
@@ -217,15 +211,12 @@ export default class Game {
     }
 
     draw() {
-        // Очищаем весь канвас
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Рисуем фон игрового поля (стакана)
         this.ctx.fillStyle = '#111';
         this.ctx.fillRect(this.offsetX, this.offsetY, COLS * BLOCK_SIZE, ROWS * BLOCK_SIZE);
 
-        // Рисуем границы стакана
         this.ctx.strokeStyle = '#2f2d31';
         this.ctx.strokeRect(this.offsetX - 1, this.offsetY - 1, COLS * BLOCK_SIZE + 2, ROWS * BLOCK_SIZE + 2);
 
