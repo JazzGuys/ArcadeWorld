@@ -41,19 +41,19 @@ const api = {
     },
 
     register(username, password) {
-        return this.post('http://localhost:3000/api/register', {username, password});
+        return this.post('https://arcadeworldbackend.onrender.com/api/register', {username, password});
     },
 
     login(username, password) {
-        return this.post('http://localhost:3000/api/login', {username, password});
+        return this.post('https://arcadeworldbackend.onrender.com/api/login', {username, password});
     },
 
     getLeaders(game) {
-        return this.get('http://localhost:3000/api/leaderboard', {game});
+        return this.get('https://arcadeworldbackend.onrender.com/api/leaderboard', {game});
     },
 
     submitScore(game, score) {
-        return this.post('http://localhost:3000/api/score', {game, score});
+        return this.post('https://arcadeworldbackend.onrender.com/api/score', {game, score});
     }
 };
 
